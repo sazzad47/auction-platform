@@ -27,9 +27,9 @@ const Login: React.FC = () => {
 
     return (
         <div className="container h-screen px-6 py-4 mx-auto flex justify-center items-center gap-16">
-            <div className="w-[40rem] rounded-lg mx-auto bg-primary shadow p-10 flex flex-col gap-4">
-                <h3 className="text-2xl font-medium text-start mb-3">Login</h3>
-                <form onSubmit={handleSubmit}>
+            <div className="w-[40rem] rounded-lg mx-auto bg-primary shadow p-10 flex flex-col gap-6">
+                <h3 className="text-2xl font-medium text-start">Login</h3>
+                <form onSubmit={handleSubmit} className="flex flex-col gap-4">
                     <div className="flex flex-col gap-2">
                         <label htmlFor="email" className="text-lg font-medium">
                             Email

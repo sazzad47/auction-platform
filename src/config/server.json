@@ -1,0 +1,8 @@
+{
+    "dev_server": {
+        "HOST": "https://dispodutchieadmin.1space.co/"
+    },
+    "prod_server": {
+        "HOST": "https://www.disposhops.com/"
+    }
+}
