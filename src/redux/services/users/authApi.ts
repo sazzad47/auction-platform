@@ -1,11 +1,11 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import api from "../../../config/api.json";
-import { server } from "../../../config/serverPoint";
+import api from '../../../config/api.json';
+import { server } from '../../../config/serverPoint';
 
 export const authApi = createApi({
     reducerPath: 'authApi',
     baseQuery: fetchBaseQuery({
-        baseUrl: server + "api/v1/"
+        baseUrl: server + 'api/v1/',
     }),
     endpoints: (builder) => ({
         register: builder.mutation({

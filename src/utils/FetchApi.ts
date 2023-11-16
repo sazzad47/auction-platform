@@ -15,16 +15,16 @@ const fetchData = async (endPoint: string, token = ''): Promise<AxiosResponse> =
         };
     }
 
-    let response = await axios.get(`${BaseUrl}${endPoint}`, config);
+    const response = await axios.get(`${BaseUrl}${endPoint}`, config);
     return response;
 };
 
-const postData = async (endPoint: string, data: any): Promise<AxiosResponse> => {
-    let response = await axios.post(`${BaseUrl}${endPoint}`, data);
+const postData = async (endPoint: string, data: unknown): Promise<AxiosResponse> => {
+    const response = await axios.post(`${BaseUrl}${endPoint}`, data);
     return response;
 };
 
-const patchData = async (endPoint: string, data: any, token = ''): Promise<AxiosResponse> => {
+const patchData = async (endPoint: string, data: unknown, token = ''): Promise<AxiosResponse> => {
     let config;
     if (token) {
         config = {
@@ -34,7 +34,7 @@ const patchData = async (endPoint: string, data: any, token = ''): Promise<Axios
         };
     }
 
-    let response = await axios.patch(`${BaseUrl}${endPoint}`, data, config);
+    const response = await axios.patch(`${BaseUrl}${endPoint}`, data, config);
     return response;
 };
 

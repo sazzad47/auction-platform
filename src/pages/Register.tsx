@@ -1,20 +1,26 @@
 import { useState, ChangeEvent, FormEvent } from 'react';
 import { Link } from 'react-router-dom';
+import { validateForm } from '../utils/validations/validateRegisterData';
+import { RegisterData, SignupResponse } from '../models/register';
+import { postData } from '../utils/fetchApi';
+import api from '../config/api.json';
+import { showLoader } from '../utils/helper';
 
-interface RegisterState {
-    email: string;
-    password: string;
-    confirmPassword: string;
-}
+import Swal from 'sweetalert2';
+import { createToast } from '../utils/toast';
+import { useAppDispatch } from '../redux/hooks';
+import { setToken, setUserInfo } from '../redux/features/users/authSlice';
 
-const initState: RegisterState = {
+const initState: RegisterData = {
     email: '',
     password: '',
     confirmPassword: '',
 };
 
 const Register: React.FC = () => {
-    const [data, setData] = useState<RegisterState>(initState);
+    const dispatch = useAppDispatch();
+
+    const [data, setData] = useState<RegisterData>(initState);
     const { email, password, confirmPassword } = data;
 
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -22,9 +28,25 @@ const Register: React.FC = () => {
         setData((prevData) => ({ ...prevData, [id]: value }));
     };
 
-    const handleSubmit = (e: FormEvent) => {
+    const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
-        console.log('Form submitted:', data);
+
+        if (validateForm({ data })) {
+            try {
+                showLoader();
+                const response: SignupResponse = await postData(api.auth.registration, data);
+
+                Swal.close();
+                createToast('Registration Successful', { type: 'success' });
+                dispatch(setToken(response.data.data.token));
+                dispatch(setUserInfo(response.data.data.user));
+                console.log('response', response);
+                // eslint-disable-next-line
+            } catch (err: any) {
+                Swal.close();
+                createToast(err.response.data.message, { type: 'error' });
+            }
+        }
     };
 
     return (
