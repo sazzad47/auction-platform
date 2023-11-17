@@ -1,15 +1,8 @@
 import { useState, ChangeEvent, FormEvent } from 'react';
 import { Link } from 'react-router-dom';
-import { validateForm } from '../utils/validations/validateRegisterData';
-import { RegisterData, SignupResponse } from '../models/register';
-import { postData } from '../utils/fetchApi';
-import api from '../config/api.json';
-import { showLoader } from '../utils/helper';
-
-import Swal from 'sweetalert2';
-import { createToast } from '../utils/toast';
-import { useAppDispatch } from '../redux/hooks';
-import { setToken, setUserInfo } from '../redux/features/users/authSlice';
+import { RegisterData } from '../models/register';
+import { useAppDispatch, useAppSelector } from '../redux/hooks';
+import { register } from '../redux/actions/authAction';
 
 const initState: RegisterData = {
     email: '',
@@ -18,7 +11,10 @@ const initState: RegisterData = {
 };
 
 const Register: React.FC = () => {
+    const auth = useAppSelector((state) => state.auth);
     const dispatch = useAppDispatch();
+
+    console.log('auth', auth);
 
     const [data, setData] = useState<RegisterData>(initState);
     const { email, password, confirmPassword } = data;
@@ -30,23 +26,7 @@ const Register: React.FC = () => {
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
-
-        if (validateForm({ data })) {
-            try {
-                showLoader();
-                const response: SignupResponse = await postData(api.auth.registration, data);
-
-                Swal.close();
-                createToast('Registration Successful', { type: 'success' });
-                dispatch(setToken(response.data.data.token));
-                dispatch(setUserInfo(response.data.data.user));
-                console.log('response', response);
-                // eslint-disable-next-line
-            } catch (err: any) {
-                Swal.close();
-                createToast(err.response.data.message, { type: 'error' });
-            }
-        }
+        dispatch(register(data));
     };
 
     return (
@@ -59,7 +39,7 @@ const Register: React.FC = () => {
                             Email
                         </label>
                         <input
-                            type="text"
+                            type="email"
                             id="email"
                             className="py-3 px-4 block w-full rounded-md text-sm border border-gray-300 focus:outline-fuchsia-400"
                             placeholder="Enter your email"

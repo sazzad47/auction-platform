@@ -1,34 +1,23 @@
-import { RegisterData } from './../../models/register';
-import { createToast } from '../toast';
+import { RegisterData } from '../../models/register';
 import { validateEmail } from './validateEmail';
 
-const showErrorToast = (message: string): boolean => {
-    createToast(message, { type: 'info' });
-    return false;
-};
-
-export const validateForm = ({ data }: { data: RegisterData }): boolean => {
+export const validateRegisterData = ({ data }: { data: RegisterData }): string | null => {
     const { email, password, confirmPassword } = data;
+    let errMsg: string | null = null;
 
-    if (!email || !validateEmail(email)) {
-        return showErrorToast(!email ? 'Please enter email!' : 'Invalid Email!');
+    if (!email) {
+        errMsg = 'Please add your email.';
+    } else if (!validateEmail(email)) {
+        errMsg = 'Email format is incorrect.';
     }
 
-    if (!password) {
-        return showErrorToast('Please enter password!');
+    if (!errMsg && (!password || password.length < 6)) {
+        errMsg = 'Please add a valid password (at least 6 characters).';
     }
 
-    if (password.length < 6) {
-        return showErrorToast('Password must be at least 6 characters long.');
+    if (!errMsg && password !== confirmPassword) {
+        errMsg = 'Confirm password did not match.';
     }
 
-    if (!confirmPassword) {
-        return showErrorToast('Please confirm password!');
-    }
-
-    if (password !== confirmPassword) {
-        return showErrorToast('Password did not match!');
-    }
-
-    return true;
+    return errMsg;
 };

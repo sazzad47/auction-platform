@@ -1,18 +1,19 @@
 import React, { useState, ChangeEvent, FormEvent } from 'react';
 import { Link } from 'react-router-dom';
+import { useAppDispatch, useAppSelector } from '../redux/hooks';
+import { login } from '../redux/actions/authAction';
+import { LoginData } from '../models/login';
 
-interface AuthState {
-    email: string;
-    password: string;
-}
-
-const initState: AuthState = {
+const initState: LoginData = {
     email: '',
     password: '',
 };
 
 const Login: React.FC = () => {
-    const [data, setData] = useState<AuthState>({ ...initState });
+    const auth = useAppSelector((state) => state.auth);
+    const dispatch = useAppDispatch();
+    console.log('auth', auth);
+    const [data, setData] = useState<LoginData>({ ...initState });
     const { email, password } = data;
 
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -22,7 +23,7 @@ const Login: React.FC = () => {
 
     const handleSubmit = (e: FormEvent) => {
         e.preventDefault();
-        console.log('Form submitted:', data);
+        dispatch(login(data));
     };
 
     return (
@@ -35,7 +36,7 @@ const Login: React.FC = () => {
                             Email
                         </label>
                         <input
-                            type="text"
+                            type="email"
                             id="email"
                             className="py-3 px-4 block w-full rounded-md text-sm border border-gray-300 focus:outline-fuchsia-400"
                             placeholder="Enter your email"

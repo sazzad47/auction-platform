@@ -19,8 +19,17 @@ const fetchData = async (endPoint: string, token = ''): Promise<AxiosResponse> =
     return response;
 };
 
-const postData = async (endPoint: string, data: unknown): Promise<AxiosResponse> => {
-    const response = await axios.post(`${BaseUrl}${endPoint}`, data);
+const postData = async (endPoint: string, data?: unknown, token = ''): Promise<AxiosResponse> => {
+    let config;
+    if (token) {
+        config = {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        };
+    }
+
+    const response = await axios.post(`${BaseUrl}${endPoint}`, data, config);
     return response;
 };
 

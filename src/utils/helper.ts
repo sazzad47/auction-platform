@@ -1,8 +1,8 @@
 import Swal from 'sweetalert2';
 
-export function showLoader() {
+export function showLoader(msg: string) {
     Swal.fire({
-        title: 'Processing...',
+        title: msg,
     });
     Swal.showLoading();
 }

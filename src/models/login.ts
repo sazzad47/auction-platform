@@ -1,3 +1,8 @@
+export interface LoginData {
+    email: string;
+    password: string;
+}
+
 interface loginResponse {
     data: {
         token: string;
