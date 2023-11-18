@@ -21,7 +21,6 @@ export const register = createAsyncThunk('auth/register', async (data: RegisterD
         const res: SignupResponse = await postData(api.auth.registration, data);
 
         localStorage.setItem('firstLogin', 'true');
-
         dispatch(setUser({ token: res.data.data.token, user: res.data.data.user }));
 
         Swal.close();

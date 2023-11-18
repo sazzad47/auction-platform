@@ -4,5 +4,9 @@
         "login": "auth/login",
         "accessToken": "auth/access-token",
         "logout": "auth/logout"
+    },
+    "item": {
+        "create": "item/create",
+        "getAll": "item/get"
     }
 }

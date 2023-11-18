@@ -1,7 +1,7 @@
 import { useState, ChangeEvent, FormEvent } from 'react';
 import { Link } from 'react-router-dom';
 import { RegisterData } from '../models/register';
-import { useAppDispatch, useAppSelector } from '../redux/hooks';
+import { useAppDispatch } from '../redux/hooks';
 import { register } from '../redux/actions/authAction';
 
 const initState: RegisterData = {
@@ -11,10 +11,7 @@ const initState: RegisterData = {
 };
 
 const Register: React.FC = () => {
-    const auth = useAppSelector((state) => state.auth);
     const dispatch = useAppDispatch();
-
-    console.log('auth', auth);
 
     const [data, setData] = useState<RegisterData>(initState);
     const { email, password, confirmPassword } = data;

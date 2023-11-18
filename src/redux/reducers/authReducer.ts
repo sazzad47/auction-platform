@@ -6,12 +6,12 @@ type UserData = {
 };
 
 interface AuthState {
-    token: string | null;
+    token: string;
     user: UserData | null;
 }
 
 const initialAuthState: AuthState = {
-    token: null,
+    token: '',
     user: null,
 };
 
