@@ -1,49 +1,36 @@
-import axios, { AxiosResponse } from 'axios';
+import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 import { server } from '../config/serverPoint';
 
 const BaseUrl = server + 'api/v1/';
 
-const fetchData = async (endPoint: string, token = ''): Promise<AxiosResponse> => {
-    let config = {
-        headers: {},
-    };
-    if (token) {
-        config = {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        };
-    }
+const axiosInstance = axios.create({
+    withCredentials: true,
+});
 
-    const response = await axios.get(`${BaseUrl}${endPoint}`, config);
+const fetchData = async (endPoint: string, token = ''): Promise<AxiosResponse> => {
+    const config: AxiosRequestConfig = {
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+    };
+
+    const response = await axiosInstance.get(`${BaseUrl}${endPoint}`, config);
     return response;
 };
 
 const postData = async (endPoint: string, data?: unknown, token = ''): Promise<AxiosResponse> => {
-    let config;
-    if (token) {
-        config = {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        };
-    }
+    const config: AxiosRequestConfig = {
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+    };
 
-    const response = await axios.post(`${BaseUrl}${endPoint}`, data, config);
+    const response = await axiosInstance.post(`${BaseUrl}${endPoint}`, data, config);
     return response;
 };
 
 const patchData = async (endPoint: string, data: unknown, token = ''): Promise<AxiosResponse> => {
-    let config;
-    if (token) {
-        config = {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        };
-    }
+    const config: AxiosRequestConfig = {
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+    };
 
-    const response = await axios.patch(`${BaseUrl}${endPoint}`, data, config);
+    const response = await axiosInstance.patch(`${BaseUrl}${endPoint}`, data, config);
     return response;
 };
 

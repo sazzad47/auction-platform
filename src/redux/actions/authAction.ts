@@ -7,8 +7,9 @@ import { setUser } from '../reducers/authReducer';
 import { createToast } from '../../utils/toast';
 import { showLoader } from '../../utils/helper';
 import Swal from 'sweetalert2';
-import loginResponse, { LoginData } from '../../models/login';
+import { LoginData } from '../../models/login';
 import { validateLoginData } from '../../utils/validations/validateLoginData';
+import { setLoading } from '../reducers/globalReducer';
 
 export const register = createAsyncThunk('auth/register', async (data: RegisterData, { dispatch }) => {
     const errMsg = validateRegisterData({ data });
@@ -22,7 +23,7 @@ export const register = createAsyncThunk('auth/register', async (data: RegisterD
         localStorage.setItem('firstLogin', 'true');
 
         dispatch(setUser({ token: res.data.data.token, user: res.data.data.user }));
-        console.log('res.data.data.token', res.data.data.token);
+
         Swal.close();
         createToast(res.data.message, { type: 'success' });
     } catch (err: any) {
@@ -37,14 +38,40 @@ export const login = createAsyncThunk('auth/login', async (data: LoginData, { di
     }
     try {
         showLoader('Signing in...');
-        const res: loginResponse = await postData(api.auth.login, data);
+        const res = await postData(api.auth.login, data);
 
         localStorage.setItem('firstLogin', 'true');
 
         dispatch(setUser({ token: res.data.token, user: res.data.user }));
         Swal.close();
     } catch (err: any) {
-        console.log('erro', err);
+        createToast(err.response.data.message, { type: 'error' });
+    }
+});
+
+export const getAccessToken = createAsyncThunk('auth/accessToken', async (_, { dispatch }) => {
+    const firstLogin = localStorage.getItem('firstLogin');
+    if (firstLogin) {
+        try {
+            dispatch(setLoading(true));
+            const res = await postData(api.auth.accessToken);
+            dispatch(setUser({ token: res.data.data.token, user: res.data.data.user }));
+
+            dispatch(setLoading(false));
+        } catch (err: any) {
+            createToast(err.response.data.message, { type: 'error' });
+        }
+    }
+});
+
+export const logout = createAsyncThunk('auth/logout', async () => {
+    try {
+        showLoader('Logging out...');
+        localStorage.removeItem('firstLogin');
+        await postData(api.auth.logout);
+        Swal.close();
+        window.location.href = '/';
+    } catch (err: any) {
         createToast(err.response.data.message, { type: 'error' });
     }
 });

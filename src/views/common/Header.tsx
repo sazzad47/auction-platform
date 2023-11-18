@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { FaEnvira } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import { BiUserCircle } from 'react-icons/bi';
+import { useAppDispatch } from '../../redux/hooks';
+import { logout } from '../../redux/actions/authAction';
 
 const Header: React.FC = () => {
     return (
@@ -18,10 +20,17 @@ const Header: React.FC = () => {
 };
 
 const UserMenu = () => {
+    const dispatch = useAppDispatch();
+
     const [isDropdownOpen, setDropdownOpen] = useState(false);
 
     const toggleDropdown = () => {
         setDropdownOpen(!isDropdownOpen);
+    };
+
+    const handleLogout = () => {
+        toggleDropdown();
+        dispatch(logout());
     };
 
     return (
@@ -66,7 +75,7 @@ const UserMenu = () => {
                     Deposit
                 </Link>
                 <Link
-                    onClick={toggleDropdown}
+                    onClick={handleLogout}
                     className="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100"
                     to="/login">
                     Logout
