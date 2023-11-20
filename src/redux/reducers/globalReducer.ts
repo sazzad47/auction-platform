@@ -5,7 +5,7 @@ interface GlobalState {
 }
 
 const initialGlobalState: GlobalState = {
-    loading: false,
+    loading: true,
 };
 
 const globalReducer = createSlice({

@@ -2,17 +2,20 @@ import React, { useState } from 'react';
 import { FaEnvira } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import { BiUserCircle } from 'react-icons/bi';
-import { useAppDispatch } from '../../redux/hooks';
+import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { logout } from '../../redux/actions/authAction';
 
 const Header: React.FC = () => {
+    const deposit = useAppSelector((state) => state.deposit);
+    const { amount } = deposit;
+
     return (
         <div className="container px-6 py-4 mx-auto my-5 rounded-lg flex justify-between bg-primary shadow">
             <Link to="/">
                 <FaEnvira className="text-4xl" />
             </Link>
             <div className="flex items-center gap-5">
-                <p> Balance: $100 </p>
+                <p> Balance: ${amount} </p>
                 <UserMenu />
             </div>
         </div>

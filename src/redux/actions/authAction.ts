@@ -10,6 +10,7 @@ import Swal from 'sweetalert2';
 import { LoginData } from '../../models/login';
 import { validateLoginData } from '../../utils/validations/validateLoginData';
 import { setLoading } from '../reducers/globalReducer';
+import { setDeposit } from '../reducers/depositReducer';
 
 export const register = createAsyncThunk('auth/register', async (data: RegisterData, { dispatch }) => {
     const errMsg = validateRegisterData({ data });
@@ -21,6 +22,7 @@ export const register = createAsyncThunk('auth/register', async (data: RegisterD
         const res: SignupResponse = await postData(api.auth.registration, data);
 
         localStorage.setItem('firstLogin', 'true');
+
         dispatch(setUser({ token: res.data.data.token, user: res.data.data.user }));
 
         Swal.close();
@@ -42,6 +44,7 @@ export const login = createAsyncThunk('auth/login', async (data: LoginData, { di
         localStorage.setItem('firstLogin', 'true');
 
         dispatch(setUser({ token: res.data.token, user: res.data.user }));
+
         Swal.close();
     } catch (err: any) {
         createToast(err.response.data.message, { type: 'error' });
@@ -54,7 +57,9 @@ export const getAccessToken = createAsyncThunk('auth/accessToken', async (_, { d
         try {
             dispatch(setLoading(true));
             const res = await postData(api.auth.accessToken);
+
             dispatch(setUser({ token: res.data.data.token, user: res.data.data.user }));
+            dispatch(setDeposit(res.data.data.user.deposit.amount));
 
             dispatch(setLoading(false));
         } catch (err: any) {

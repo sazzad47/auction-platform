@@ -1,3 +1,5 @@
+import { DepositData } from "./deposit";
+
 export interface RegisterData {
     email: string;
     password: string;
@@ -14,6 +16,8 @@ export interface SignupResponse {
             user: {
                 id: string;
                 email: string;
+                deposit: DepositData;
+                bids: string[];
             };
         };
     };

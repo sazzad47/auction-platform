@@ -3,17 +3,8 @@ import { privateRoutes, publicRoutes } from './routes';
 import Layout from '../views/layout';
 import { AuthProtected } from './AuthProtected';
 import { NonAuth } from './NonAuth';
-import { useEffect } from 'react';
-import { useAppDispatch } from '../redux/hooks';
-import { getAccessToken } from '../redux/actions/authAction';
 
 const Index = () => {
-    const dispatch = useAppDispatch();
-
-    useEffect(() => {
-        dispatch(getAccessToken());
-    }, []);
-
     return (
         <>
             <Routes>

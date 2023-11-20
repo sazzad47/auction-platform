@@ -8,5 +8,8 @@
     "item": {
         "create": "item/create",
         "getAll": "item/get"
+    },
+    "deposit": {
+        "create": "deposit/create"
     }
 }
