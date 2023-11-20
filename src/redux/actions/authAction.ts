@@ -55,7 +55,6 @@ export const getAccessToken = createAsyncThunk('auth/accessToken', async (_, { d
     const firstLogin = localStorage.getItem('firstLogin');
     if (firstLogin) {
         try {
-            dispatch(setLoading(true));
             const res = await postData(api.auth.accessToken);
 
             dispatch(setUser({ token: res.data.data.token, user: res.data.data.user }));
@@ -65,6 +64,8 @@ export const getAccessToken = createAsyncThunk('auth/accessToken', async (_, { d
         } catch (err: any) {
             createToast(err.response.data.message, { type: 'error' });
         }
+    } else {
+        dispatch(setLoading(false));
     }
 });
 

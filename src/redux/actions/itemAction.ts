@@ -1,5 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { postData } from '../../utils/fetchApi';
+import { fetchData, postData } from '../../utils/fetchApi';
 import api from '../../config/api.json';
 import { createToast } from '../../utils/toast';
 import { showLoader } from '../../utils/helper';
@@ -13,7 +13,7 @@ interface CreateItemArgs {
     token: string;
 }
 
-export const createItem = createAsyncThunk('item/create', async ({ data, token }: CreateItemArgs, { dispatch }) => {
+export const createItem = createAsyncThunk('item/create', async ({ data, token }: CreateItemArgs) => {
     const errMsg = validateItemData({ data });
     if (errMsg) {
         return createToast(errMsg, { type: 'error' });
@@ -22,7 +22,19 @@ export const createItem = createAsyncThunk('item/create', async ({ data, token }
         showLoader('Creating...');
         const res = await postData(api.item.create, data, token);
 
-        dispatch(setItem(res.data.data));
+        Swal.close();
+        createToast(res.data.message, { type: 'success' });
+    } catch (err: any) {
+        createToast(err.response.data.message, { type: 'error' });
+    }
+});
+
+export const fetchItems = createAsyncThunk('item/create', async (token: string, { dispatch }) => {
+    try {
+        showLoader('Creating...');
+        const res = await fetchData(api.item.getAll, token);
+        console.log('res', res);
+        dispatch(setItem(res.data.data.items));
 
         Swal.close();
         createToast(res.data.message, { type: 'success' });

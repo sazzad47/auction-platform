@@ -5,11 +5,14 @@
         "accessToken": "auth/access-token",
         "logout": "auth/logout"
     },
+    "deposit": {
+        "create": "deposit/create"
+    },
     "item": {
         "create": "item/create",
         "getAll": "item/get"
     },
-    "deposit": {
-        "create": "deposit/create"
+    "bid": {
+        "create": "bid/create"
     }
 }

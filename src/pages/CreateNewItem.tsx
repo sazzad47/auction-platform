@@ -5,7 +5,7 @@ import { createItem } from '../redux/actions/itemAction';
 
 const initState: ItemData = {
     name: '',
-    startPrice: undefined,
+    startPrice: 0,
     startTime: '',
     endTime: '',
 };

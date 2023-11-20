@@ -14,7 +14,7 @@ export interface SignupResponse {
         data: {
             token: string;
             user: {
-                id: string;
+                _id: string;
                 email: string;
                 deposit: DepositData;
                 bids: string[];

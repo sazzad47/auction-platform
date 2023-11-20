@@ -2,19 +2,19 @@ import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { ItemData } from '../../models/item';
 
 interface ItemState {
-    item: ItemData[];
+    data: ItemData[];
 }
 
 const initialItemState: ItemState = {
-    item: [],
+    data: [],
 };
 
 const itemReducer = createSlice({
     name: 'item',
     initialState: initialItemState,
     reducers: {
-        setItem: (state, action: PayloadAction<ItemData>) => {
-            state.item.push(action.payload);
+        setItem: (state, action: PayloadAction<ItemData[]>) => {
+            state.data = action.payload;
         },
     },
 });
