@@ -1,32 +1,42 @@
-import { ReactNode, useEffect, useState, ChangeEvent, FormEvent } from 'react';
+import { ReactNode, useState, ChangeEvent, FormEvent } from 'react';
 import { IoMdClose } from 'react-icons/io';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
-import { fetchItems } from '../redux/actions/itemAction';
+// import { fetchItems } from '../redux/actions/itemAction';
 import { calculateCurrentPrice, formatPrice } from '../utils/helper';
 import useCountdownTimer from '../hooks/useCountdownTimer';
 import { ItemData } from '../models/item';
 import { BidData } from '../models/bid';
 import { createBid } from '../redux/actions/bidAction';
+import filterSearch from '../utils/filterSearch';
+import useFetchItems from '../hooks/useFetchItems';
 
 const Home: React.FC = () => {
-    const dispatch = useAppDispatch();
-    const auth = useAppSelector((state) => state.auth);
+    // const dispatch = useAppDispatch();
+    // const auth = useAppSelector((state) => state.auth);
     const items = useAppSelector((state) => state.items);
     console.log('items', items.data);
-    useEffect(() => {
-        dispatch(fetchItems(auth.token));
-    }, []);
+
+    const handleFilterChange = (sold: boolean) => {
+        // Update the 'sold' parameter to true
+        filterSearch({ sold });
+    };
+
+    // useEffect(() => {
+    //     dispatch(fetchItems(auth.token));
+    // }, []);
 
     return (
         <div className="container py-4 mx-auto my-16 flex flex-col gap-16">
             <div className="w-full flex items-center justify-start gap-5">
                 <button
                     type="button"
+                    onClick={() => handleFilterChange(false)}
                     className="py-3 px-4 rounded-full inline-flex items-center gap-x-2 text-sm font-semibold border border-transparent bg-red-100 text-red-800 hover:bg-red-200 disabled:opacity-50 disabled:pointer-events-none">
                     Ongoing
                 </button>
                 <button
                     type="button"
+                    onClick={() => handleFilterChange(true)}
                     className="py-3 px-4 rounded-full inline-flex items-center gap-x-2 text-sm font-semibold border border-transparent bg-transparent text-red-800 hover:bg-red-200 disabled:opacity-50 disabled:pointer-events-none">
                     Completed
                 </button>
@@ -38,7 +48,10 @@ const Home: React.FC = () => {
 
 const Table = () => {
     const items = useAppSelector((state) => state.items);
-
+    const { data, hasMore, loading } = useFetchItems(false);
+    console.log('data', data);
+    console.log('hasMore', hasMore);
+    console.log('loading', loading);
     return (
         <div className="flex flex-col">
             <div className="-m-1.5 overflow-x-auto">

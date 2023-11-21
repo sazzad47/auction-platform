@@ -7,9 +7,10 @@ const axiosInstance = axios.create({
     withCredentials: true,
 });
 
-const fetchData = async (endPoint: string, token = ''): Promise<AxiosResponse> => {
+const fetchData = async (endPoint: string, token = '', signal?: AbortSignal): Promise<AxiosResponse> => {
     const config: AxiosRequestConfig = {
         headers: token ? { Authorization: `Bearer ${token}` } : {},
+        signal,
     };
 
     const response = await axiosInstance.get(`${BaseUrl}${endPoint}`, config);
