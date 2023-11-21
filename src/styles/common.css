@@ -1,0 +1,38 @@
+.skeleton {
+    background-color: #03fcf4;
+    position: relative;
+    z-index: 9999;
+    box-shadow: none;
+    overflow: hidden;
+    content-visibility: hidden;
+}
+
+.skeleton::before {
+    background-color: #03fcf4;
+    position: absolute;
+    content: '';
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    content-visibility: hidden;
+    z-index: 5000;
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.skeleton::after {
+    position: absolute;
+    content: '';
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    z-index: 5001;
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+    50% {
+        opacity: .5;
+    }
+}

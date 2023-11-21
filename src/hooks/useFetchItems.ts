@@ -1,68 +1,70 @@
-import { useEffect, useCallback } from 'react';
+import { useEffect, useState } from 'react';
 import { ItemData } from '../models/item';
 import { fetchData } from '../utils/fetchApi';
 import api from '../config/api.json';
 import { createToast } from '../utils/toast';
-import { useAppDispatch, useAppSelector } from '../redux/hooks';
-import { setItem, setItemHasMore, setItemLoading } from '../redux/reducers/itemReducer';
+import { useAppSelector } from '../redux/hooks';
 
 interface FetchDataResult {
-    data: ItemData[] | null;
+    data: ItemData[];
     hasMore: boolean;
     loading: boolean;
 }
 
-const useFetchItems = (sold = false, page = 1, limit = 6): FetchDataResult => {
-    const dispatch = useAppDispatch();
+const useFetchItems = (sold = false, page = 1, limit = 5): FetchDataResult => {
+    const [data, setData] = useState<ItemData[]>([]);
+    const [hasMore, setHasMore] = useState<boolean>(true);
+    const [loading, setLoading] = useState<boolean>(true);
 
     const auth = useAppSelector((state) => state.auth);
-    const items = useAppSelector((state) => state.items);
-
-    const { data, loading, hasMore } = items;
-
-    const abortController = new AbortController();
-    const { signal } = abortController;
-
-    // Fetch data from the API
-    const fetchItems = useCallback(async () => {
-        try {
-            dispatch(setItemLoading(true));
-
-            const response = await fetchData(
-                `${api.item.getAll}?sold=${sold}&page=${page}&limit=${limit}`,
-                auth.token,
-                signal,
-            );
-
-            const newData = response?.data?.data?.items || [];
-
-            if (data.length === 0 || page === 1) {
-                dispatch(setItem(newData));
-            } else {
-                const mergedData = [...data, ...newData];
-                const uniqueData = mergedData.filter(
-                    (item, index, self) => self.findIndex((i) => i._id === item._id) === index,
-                );
-                dispatch(setItem(uniqueData));
-            }
-
-            dispatch(setItemHasMore(data?.length < response?.data?.data?.totalCount));
-        } catch (error) {
-            createToast('An error occurred while fetching data.');
-        } finally {
-            dispatch(setItemLoading(false));
-        }
-    }, [sold, page, limit, signal]);
 
     useEffect(() => {
-        fetchItems();
+        let isMounted = true;
+        const abortController = new AbortController();
 
-        return () => {
-            if (!abortController.signal.aborted) {
+        const fetchItems = async () => {
+            try {
+                setLoading(true);
+
+                const response = await fetchData(
+                    `${api.item.getAll}?sold=${sold}&page=${page}&limit=${limit}`,
+                    auth.token,
+                    abortController.signal,
+                );
+
+                const newData = response?.data?.data?.items || [];
+
+                if (isMounted) {
+                    setData((prevData: ItemData[]) => {
+                        if (prevData.length === 0 || page === 1) {
+                            return newData;
+                        } else {
+                            const mergedData = [...prevData, ...newData];
+                            const uniqueData = mergedData.filter(
+                                (item, index, self) => self.findIndex((i) => i._id === item._id) === index,
+                            );
+                            return uniqueData;
+                        }
+                    });
+
+                    setHasMore(data.length < response?.data?.data?.totalCount);
+                }
+            } catch (error) {
+                createToast('An error occurred while fetching data.');
+            } finally {
+                if (isMounted) {
+                    setLoading(false);
+                }
                 abortController.abort();
             }
         };
-    }, []);
+
+        fetchItems();
+
+        return () => {
+            isMounted = false;
+        };
+    }, [sold, page, limit, auth.token]);
 
     return { data, hasMore, loading };
 };

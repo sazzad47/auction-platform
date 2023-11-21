@@ -63,6 +63,7 @@ export const getAccessToken = createAsyncThunk('auth/accessToken', async (_, { d
             dispatch(setLoading(false));
         } catch (err: any) {
             createToast(err.response.data.message, { type: 'error' });
+            dispatch(setLoading(false));
         }
     } else {
         dispatch(setLoading(false));

@@ -1,12 +1,12 @@
+@import './fonts.css';
+@import './common.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-@import 'fonts.css';
 
 body {
   margin: 0;
   width: 100%;
   background-color: #f3f4f6;
 }
-
