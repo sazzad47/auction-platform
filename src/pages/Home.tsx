@@ -1,4 +1,4 @@
-import { ReactNode, useState, useCallback, useRef, ChangeEvent, FormEvent } from 'react';
+import { ReactNode, useState, ChangeEvent, FormEvent, RefCallback } from 'react';
 import { IoMdClose } from 'react-icons/io';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import { calculateCurrentPrice, formatPrice } from '../utils/helper';
@@ -10,37 +10,22 @@ import useFetchItems from '../hooks/useFetchItems';
 import LoadingSpin from '../components/LoadingSpin';
 
 const Home: React.FC = () => {
-    const observer = useRef<IntersectionObserver | null>(null);
-
     const [sold, setSold] = useState<boolean>(false);
-    const [page, setPage] = useState<number>(1);
 
-    const { data, hasMore, loading } = useFetchItems(sold, page);
+    const { data, hasMore, loading, setPage, setData, lastItemRef } = useFetchItems(sold);
 
-    // Callback for observing last item element
-    const lastItemElementRef = useCallback((node: HTMLDivElement | null) => {
-        if (loading || !hasMore) return;
-
-        if (observer.current) observer.current.disconnect();
-
-        observer.current = new IntersectionObserver(
-            (entries) => {
-                if (entries[0].isIntersecting && hasMore) {
-                    setPage((prevPageNumber) => prevPageNumber + 1);
-                }
-            },
-            { threshold: 0.8 }, // Observe when 80% of the element is visible
-        );
-
-        if (node) observer.current.observe(node);
-    }, []);
+    const handleFilter = (sold: boolean) => {
+        setPage(1);
+        setSold(sold);
+        setData([]);
+    };
 
     return (
         <div className="container py-4 mx-auto my-16 flex flex-col gap-16">
             <div className="w-full flex items-center justify-start gap-5">
                 <button
                     type="button"
-                    onClick={() => setSold(false)}
+                    onClick={() => handleFilter(false)}
                     className={`py-3 px-4 rounded-full inline-flex items-center gap-x-2 text-sm font-semibold border border-transparent ${
                         !sold ? 'bg-red-100' : 'bg-transparent'
                     } text-red-800 hover:bg-red-200 disabled:opacity-50 disabled:pointer-events-none`}>
@@ -48,37 +33,37 @@ const Home: React.FC = () => {
                 </button>
                 <button
                     type="button"
-                    onClick={() => setSold(true)}
+                    onClick={() => handleFilter(true)}
                     className={`py-3 px-4 rounded-full inline-flex items-center gap-x-2 text-sm font-semibold border border-transparent ${
                         sold ? 'bg-red-100' : 'bg-transparent'
                     } text-red-800 hover:bg-red-200 disabled:opacity-50 disabled:pointer-events-none`}>
                     Completed
                 </button>
             </div>
-            <Table data={data} hasMore={hasMore} loading={loading} lastItemElementRef={lastItemElementRef} />
+            <Table data={data} loading={loading} lastItemRef={lastItemRef} />
+            <div className="w-full flex items-center justify-center" ref={lastItemRef}>
+                {hasMore ? <h3> Loading...</h3> : !loading && <h3> End of results </h3>}
+            </div>
         </div>
     );
 };
 
 interface Props {
     data: ItemData[];
-    hasMore: boolean;
     loading: boolean;
-    lastItemElementRef: any;
+    lastItemRef: RefCallback<HTMLDivElement>;
 }
 
 const Table = (props: Props) => {
-    const { data, loading, lastItemElementRef } = props;
+    const { data, loading, lastItemRef } = props;
 
     return (
         <div className="flex flex-col">
             <div className="-m-1.5 overflow-x-auto">
                 <div className="p-1.5 min-w-full inline-block align-middle">
-                    {loading ? (
-                        <LoadingSpin size={100} />
-                    ) : data.length === 0 ? (
-                        <h3>No items found!</h3>
-                    ) : (
+                    {loading && <LoadingSpin size={100} />}
+                    {data.length === 0 && !loading && <h3>No items found!</h3>}
+                    {data.length > 0 && (
                         <table className="min-w-full divide-y divide-gray-200 border rounded-lg shadow overflow-hidden">
                             <thead className="bg-gray-50 dark:bg-gray-700">
                                 <tr>
@@ -109,10 +94,10 @@ const Table = (props: Props) => {
                                 {data?.map((item, index) => (
                                     <TableRow
                                         key={item?._id}
-                                        data={data}
                                         item={item}
+                                        lastItemRef={lastItemRef}
+                                        itemData={data}
                                         index={index}
-                                        lastItemElementRef={lastItemElementRef}
                                     />
                                 ))}
                             </tbody>
@@ -126,16 +111,16 @@ const Table = (props: Props) => {
 
 interface TableRowProps {
     item: ItemData;
-    lastItemElementRef: any;
+    itemData: ItemData[];
     index: number;
-    data: ItemData[];
+    lastItemRef: RefCallback<HTMLDivElement>;
 }
 
 const initState: BidData = {
     amount: 0,
 };
 
-const TableRow: React.FC<TableRowProps> = ({ data: itemData, item, index, lastItemElementRef }) => {
+const TableRow: React.FC<TableRowProps> = ({ item, lastItemRef, itemData, index }) => {
     const dispatch = useAppDispatch();
     const remainingTime = useCountdownTimer(item?.startTime, item?.endTime);
     const auth = useAppSelector((state) => state.auth);
@@ -167,7 +152,7 @@ const TableRow: React.FC<TableRowProps> = ({ data: itemData, item, index, lastIt
     };
 
     return (
-        <tr key={item?._id} ref={index === itemData?.length - 1 ? lastItemElementRef : null}>
+        <tr key={item?._id} ref={index === itemData.length - 1 ? lastItemRef : null} className="h-[100rem]">
             <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200">
                 {item?.name}
             </td>

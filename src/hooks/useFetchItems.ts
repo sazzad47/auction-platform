@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef, useCallback, RefCallback } from 'react';
 import { ItemData } from '../models/item';
 import { fetchData } from '../utils/fetchApi';
 import api from '../config/api.json';
@@ -7,16 +7,42 @@ import { useAppSelector } from '../redux/hooks';
 
 interface FetchDataResult {
     data: ItemData[];
-    hasMore: boolean;
     loading: boolean;
+    hasMore: boolean;
+    setPage: React.Dispatch<React.SetStateAction<number>>;
+    setData: React.Dispatch<React.SetStateAction<ItemData[]>>;
+    lastItemRef: RefCallback<HTMLDivElement>;
 }
 
-const useFetchItems = (sold = false, page = 1, limit = 5): FetchDataResult => {
+const useFetchItems = (sold = false, limit = 1): FetchDataResult => {
+    const observer = useRef<IntersectionObserver | null>(null);
+
     const [data, setData] = useState<ItemData[]>([]);
     const [hasMore, setHasMore] = useState<boolean>(true);
     const [loading, setLoading] = useState<boolean>(true);
+    const [page, setPage] = useState<number>(1);
 
     const auth = useAppSelector((state) => state.auth);
+
+    const lastItemRef = useCallback(
+        (node: HTMLDivElement | null) => {
+            if (loading || !hasMore) return;
+
+            if (observer.current) observer.current.disconnect();
+
+            observer.current = new IntersectionObserver(
+                (entries) => {
+                    if (entries[0].isIntersecting && hasMore) {
+                        setPage((prevPageNumber) => prevPageNumber + 1);
+                    }
+                },
+                { threshold: 0.8 },
+            );
+
+            if (node) observer.current.observe(node);
+        },
+        [loading, hasMore],
+    );
 
     useEffect(() => {
         let isMounted = true;
@@ -66,7 +92,7 @@ const useFetchItems = (sold = false, page = 1, limit = 5): FetchDataResult => {
         };
     }, [sold, page, limit, auth.token]);
 
-    return { data, hasMore, loading };
+    return { data, loading, hasMore, setPage, setData, lastItemRef };
 };
 
 export default useFetchItems;
