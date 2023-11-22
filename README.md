@@ -19,40 +19,81 @@ This is a simple web application built with React, Nodejs, TypeScript, Tailwind 
 
 ## Demo
 
-You can see a live demo of the app here: https://evaluation-test-eight.vercel.app/
+You can see a live demo of the app here: https://main--keen-sunflower-01898a.netlify.app/
 
 ## Installation
+
+### Backend
 
 1. Clone the repository to your local machine:
 
    ```bash
-   git clone https://github.com/sazzad47/evaluation-test.git
+   git clone https://github.com/sazzad47/auction-backend
 
 2. Navigate to the project's root directory:
 
    ```bash
-   cd evaluation-test
+   cd auction-backend
 
 3. Install the required dependencies:
 
    ```bash
    npm install
 
-## Usage
+### Frontend
 
-1. Start the development server:
+1. Clone the repository to your local machine:
+
+   ```bash
+   git clone https://github.com/sazzad47/auction-platform
+
+2. Navigate to the project's root directory:
+
+   ```bash
+   cd auction-platform
+
+3. Install the required dependencies:
+
+   ```bash
+   npm install
+
+
+## Usage
+   
+### Backend
+
+1. Create .env file in your project's root directory and add your own credentials to the following variables
+
+   ```bash
+   DATABASE_URL=
+   SECRET_JWT=
+   REFRESH_TOKEN_SECRET=
+
+2. Run the following command from your project's root directory
 
    ```bash
    npm start
 
-2. Open your web browser and visit http://localhost:3000 to access the app.
+3. Server will start on http://localhost:5000
+
+### Frontend
+
+1. Make sure your backend server is running on http://localhost:5000
+
+2. Start the development server for the frontend:
+
+   ```bash
+   npm start
+
+1. Open your web browser and visit http://localhost:3000 to access the app.
 
 ## Technologies Used
 
-React: JavaScript library for building user interfaces.
-TypeScript: A statically typed superset of JavaScript.
-Tailwind CSS: A utility-first CSS framework.
-Redux: A predictable state container for managing application state
+1. React: JavaScript library for building user interfaces.
+2. TypeScript: A statically typed superset of JavaScript.
+3. Tailwind CSS: A utility-first CSS framework.
+4. Redux: A predictable state container for managing application state
+5. Nodejs: A JavaScript runtime built on Chrome's V8 JavaScript engine.
 
 ## Contributing
 
