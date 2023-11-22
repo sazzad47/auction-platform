@@ -3,6 +3,6 @@
         "HOST": "http://localhost:5000/"
     },
     "prod_server": {
-        "HOST": "http://localhost:5000/"
+        "HOST": "https://auction-backend-production-f96a.up.railway.app/"
     }
 }
