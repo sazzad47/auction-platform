@@ -14,7 +14,7 @@ interface FetchDataResult {
     lastItemRef: RefCallback<HTMLDivElement>;
 }
 
-const useFetchItems = (sold = false, limit = 1): FetchDataResult => {
+const useFetchItems = (sold = false, limit = 9): FetchDataResult => {
     const observer = useRef<IntersectionObserver | null>(null);
 
     const [data, setData] = useState<ItemData[]>([]);
@@ -26,7 +26,7 @@ const useFetchItems = (sold = false, limit = 1): FetchDataResult => {
 
     const lastItemRef = useCallback(
         (node: HTMLDivElement | null) => {
-            if (loading || !hasMore) return;
+            if (page === 1 || loading || !hasMore) return;
 
             if (observer.current) observer.current.disconnect();
 
@@ -73,7 +73,7 @@ const useFetchItems = (sold = false, limit = 1): FetchDataResult => {
                         }
                     });
 
-                    setHasMore(data.length < response?.data?.data?.totalCount);
+                    setHasMore(response?.data?.data?.remainingItems > 0);
                 }
             } catch (error) {
                 createToast('An error occurred while fetching data.');

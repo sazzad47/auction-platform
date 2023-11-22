@@ -1,8 +1,8 @@
 import React, { ReactNode, useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
-import LoadingSpin from '../components/LoadingSpin';
 import { getAccessToken } from '../redux/actions/authAction';
+import LoadingSpin from '../components/common/LoadingSpin';
 
 interface NonAuthProps {
     children: ReactNode;

@@ -1,19 +1,23 @@
-import Register from '../pages/Register';
-import Login from '../pages/Login';
-import Home from '../pages/Home';
-import CreateNewItem from '../pages/CreateNewItem';
-import Deposit from '../pages/Deposit';
+import { lazy } from 'react';
+
+const Register = lazy(() => import('../pages/Register'));
+const Login = lazy(() => import('../pages/Login'));
+const Home = lazy(() => import('../pages/Home'));
+const CreateNewItem = lazy(() => import('../pages/CreateNewItem'));
+const Deposit = lazy(() => import('../pages/Deposit'));
+
+import PathConstants from './pathConstants';
 
 const publicRoutes = [
-    { path: '/register', component: <Register /> },
-    { path: '/login', component: <Login /> },
+    { path: PathConstants.REGISTER, component: Register },
+    { path: PathConstants.LOGIN, component: Login },
 ];
 
 const privateRoutes = [
-    { path: '/', component: <Home /> },
-    { path: '/home', component: <Home /> },
-    { path: '/create-new-item', component: <CreateNewItem /> },
-    { path: '/deposit', component: <Deposit /> },
+    { path: PathConstants.ROOT, component: Home },
+    { path: PathConstants.HOME, component: Home },
+    { path: PathConstants.CREATENEWITEM, component: CreateNewItem },
+    { path: PathConstants.DEPOSIT, component: Deposit },
 ];
 
 export { publicRoutes, privateRoutes };

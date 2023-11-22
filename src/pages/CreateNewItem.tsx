@@ -2,6 +2,42 @@ import { useState, ChangeEvent, FormEvent } from 'react';
 import { ItemData } from '../models/item';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import { createItem } from '../redux/actions/itemAction';
+import InputLabel from '../components/common/InputLabel';
+import InputField from '../components/common/InputField';
+
+interface InputConfig {
+    id: keyof ItemData;
+    label: string;
+    type: 'text' | 'password' | 'email' | 'number' | 'time';
+    placeholder: string;
+}
+
+const inputFields: InputConfig[] = [
+    {
+        id: 'name',
+        label: 'Name',
+        type: 'text',
+        placeholder: 'Enter your item name',
+    },
+    {
+        id: 'startPrice',
+        label: 'Start Price',
+        type: 'number',
+        placeholder: 'Enter start price',
+    },
+    {
+        id: 'startTime',
+        label: 'Start Time',
+        type: 'time',
+        placeholder: 'Enter start time',
+    },
+    {
+        id: 'endTime',
+        label: 'End Time',
+        type: 'time',
+        placeholder: 'Enter end time',
+    },
+];
 
 const initState: ItemData = {
     name: '',
@@ -15,7 +51,6 @@ const CreateNewItem = () => {
     const auth = useAppSelector((state) => state.auth);
 
     const [data, setData] = useState<ItemData>(initState);
-    const { name, startPrice, startTime, endTime } = data;
 
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         const { id, value } = e.target;
@@ -33,59 +68,19 @@ const CreateNewItem = () => {
             <div className="w-[40rem] rounded-lg mx-auto bg-primary shadow p-10 flex flex-col gap-6">
                 <h3 className="text-2xl font-medium text-start"> Create New Item </h3>
                 <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-                    <div className="flex flex-col gap-2">
-                        <label htmlFor="name" className="text-lg font-medium">
-                            Name
-                        </label>
-                        <input
-                            type="text"
-                            id="name"
-                            className="py-3 px-4 block w-full rounded-md text-sm border border-gray-300 focus:outline-fuchsia-400"
-                            placeholder="Enter your item name"
-                            value={name}
-                            onChange={handleChange}
-                        />
-                    </div>
-                    <div className="flex flex-col gap-2">
-                        <label htmlFor="startPrice" className="text-lg font-medium">
-                            Start Price
-                        </label>
-                        <input
-                            type="number"
-                            id="startPrice"
-                            className="py-3 px-4 block w-full rounded-md text-sm border border-gray-300 focus:outline-fuchsia-400"
-                            placeholder="Enter start price"
-                            value={startPrice}
-                            onChange={handleChange}
-                        />
-                    </div>
-                    <div className="flex flex-col gap-2">
-                        <label htmlFor="startTime" className="text-lg font-medium">
-                            Start Time
-                        </label>
-                        <input
-                            type="time"
-                            id="startTime"
-                            className="py-3 px-4 block w-full rounded-md text-sm border border-gray-300 focus:outline-fuchsia-400"
-                            placeholder="Enter start time"
-                            value={startTime}
-                            onChange={handleChange}
-                        />
-                    </div>
-                    <div className="flex flex-col gap-2">
-                        <label htmlFor="endTime" className="text-lg font-medium">
-                            End Time
-                        </label>
-                        <input
-                            type="time"
-                            id="endTime"
-                            className="py-3 px-4 block w-full rounded-md text-sm border border-gray-300 focus:outline-fuchsia-400"
-                            placeholder="Enter end time"
-                            value={endTime}
-                            onChange={handleChange}
-                        />
-                    </div>
-                    <div className="w-full flex items-center justify-end gap-5 mt-3">
+                    {inputFields.map((field) => (
+                        <div key={field.id} className="flex flex-col gap-2">
+                            <InputLabel htmlFor={field.id}>{field.label}</InputLabel>
+                            <InputField
+                                type={field.type}
+                                id={field.id}
+                                value={data[field.id]}
+                                placeholder={field.placeholder}
+                                onChange={handleChange}
+                            />
+                        </div>
+                    ))}
+                    <div className="w-full pt-0 flex items-center justify-end gap-5 mt-3">
                         <button
                             type="button"
                             onClick={() => setData(initState)}

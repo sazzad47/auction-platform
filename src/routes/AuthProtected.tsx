@@ -2,7 +2,7 @@ import React, { ReactNode, useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import { getAccessToken } from '../redux/actions/authAction';
-import LoadingSpin from '../components/LoadingSpin';
+import LoadingSpin from '../components/common/LoadingSpin';
 
 interface AuthProtectedProps {
     children: ReactNode;

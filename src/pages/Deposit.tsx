@@ -2,6 +2,24 @@ import { useState, ChangeEvent, FormEvent } from 'react';
 import { DepositData } from '../models/deposit';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import { createDeposit } from '../redux/actions/depositAction';
+import InputLabel from '../components/common/InputLabel';
+import InputField from '../components/common/InputField';
+
+interface InputConfig {
+    id: keyof DepositData;
+    label: string;
+    type: string;
+    placeholder: string;
+}
+
+const inputFields: InputConfig[] = [
+    {
+        id: 'amount',
+        label: 'Amount',
+        type: 'number',
+        placeholder: 'Enter your deposit amount',
+    },
+];
 
 const initState: DepositData = {
     amount: 0,
@@ -12,7 +30,6 @@ const Deposit = () => {
     const auth = useAppSelector((state) => state.auth);
 
     const [data, setData] = useState<DepositData>(initState);
-    const { amount } = data;
 
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         const { id, value } = e.target;
@@ -30,19 +47,18 @@ const Deposit = () => {
             <div className="w-[40rem] rounded-lg mx-auto bg-primary shadow p-10 flex flex-col gap-6">
                 <h3 className="text-2xl font-medium text-start mb-3"> Deposit </h3>
                 <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-                    <div className="flex flex-col gap-2">
-                        <label htmlFor="amount" className="text-lg font-medium">
-                            Amount
-                        </label>
-                        <input
-                            type="number"
-                            id="amount"
-                            className="py-3 px-4 block w-full rounded-md text-sm border border-gray-300 focus:outline-fuchsia-400"
-                            placeholder="Enter your deposit amount"
-                            value={amount}
-                            onChange={handleChange}
-                        />
-                    </div>
+                    {inputFields.map((field) => (
+                        <div key={field.id} className="flex flex-col gap-2">
+                            <InputLabel htmlFor={field.id}>{field.label}</InputLabel>
+                            <InputField
+                                type={field.type}
+                                id={field.id}
+                                value={data[field.id]}
+                                placeholder={field.placeholder}
+                                onChange={handleChange}
+                            />
+                        </div>
+                    ))}
                     <div className="w-full pt-0 flex items-center justify-end gap-5 mt-3">
                         <button
                             type="button"
