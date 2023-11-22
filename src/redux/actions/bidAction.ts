@@ -1,5 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { postData } from '../../utils/fetchApi';
+import { postData } from '../../utils/fetchData';
 import api from '../../config/api.json';
 import { createToast } from '../../utils/toast';
 import { showLoader } from '../../utils/helper';

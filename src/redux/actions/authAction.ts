@@ -1,5 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { postData } from '../../utils/fetchApi';
+import { postData } from '../../utils/fetchData';
 import { validateRegisterData } from '../../utils/validations/validateRegisterData';
 import { RegisterData, SignupResponse } from '../../models/register';
 import api from '../../config/api.json';

@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef, useCallback, RefCallback } from 'react';
 import { ItemData } from '../models/item';
-import { fetchData } from '../utils/fetchApi';
+import { fetchData } from '../utils/fetchData';
 import api from '../config/api.json';
 import { createToast } from '../utils/toast';
 import { useAppSelector } from '../redux/hooks';
